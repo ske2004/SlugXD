@@ -36,18 +36,49 @@ function Winner for p: Player : Boolean;
 
 implementation 
 
-procedure ReadLevel(data: file; var level: Level);
+function ReadNoAwait(data: File): String;
+var
+  s: String;
+  c: Char;
+begin
+s := '';
+c := #0;
+
+while not ((c = #13) or (c = #10) or EOF(data)) do
+  begin
+  Read(data, c);
+  if not ((c = #13) or (c = #10)) then
+    s := s + c;
+  end;
+
+if (c = #13) then
+  Read(data); { skip cr }
+
+if (c = #10) then
+  Read(data); { skip lf }
+
+Result := s;
+end;
+
+function ReadLevel(data: file; var level: Level): Boolean;
 var
   strip: String;
   x, y: Integer;
   tile: Tile;
 begin
-ReadLn(data, level.title);
+Result := false;
+
+level.title := ReadNoAwait(data);
+
+if level.title = '' then 
+  Exit;
 
 for y := 1 to FieldH do
   begin
-  ReadLn(data, strip);
-  
+  strip := ReadNoAwait(data);
+  if Length(strip) < FieldW then
+    Exit;
+
   for x := 1 to FieldW do
     begin
       case strip[x] of
@@ -58,6 +89,9 @@ for y := 1 to FieldH do
       level.field[x, y] := tile;
     end;
   end;
+
+Result := true;
+
 end;
 
 function LoadLevels(path: String): Levels;
@@ -78,9 +112,14 @@ if Err <> 0 then
 while not EOF(data) do
   begin
   Inc(levels.count);
-  ReadLevel(data, levels.arr[levels.count]);
-  ReadLn(data);
+  if not ReadLevel(data, levels.arr[levels.count]) then
+    Dec(levels.count)
+  else
+    ReadNoAwait(data); {skip empty line}
   end;
+
+if levels.count = 0 then
+  FatalError('No levels found in file ' + path);
 
 Close(data);
 
