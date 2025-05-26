@@ -1,4 +1,4 @@
-{$APPTYPE CONSOLE}
+{$APPTYPE GUI}
 
 program Slug;
 
@@ -14,7 +14,7 @@ const
   ClassName   = 'Ske2004.SlugXD';
   WindowTitle = 'SlugXD';
   WindowW = 350;
-  WindowH = 430;
+  WindowH = 450;
   HelpPage = '-*- Help -*-'+#13+#10+
              'Yellow dot is the slug you can control it with code.'+#13+#10+
              'White=No fill, Gray=Fill, Blue=Filled, Red=Spilled'+#13+#10+
@@ -379,8 +379,8 @@ bnBack  := CreateBtn(hwnd, '<', 0, 0, 20, 20);
 bnFwd   := CreateBtn(hwnd, '>', WindowW-20, 0, 20, 20);
 bnRun   := CreateBtn(hwnd, 'RUN!', WindowW-60, WindowW+20, 60, 20);
 bnReset := CreateBtn(hwnd, 'Reset', WindowW-60, WindowW+40, 60, 20);
-bnHelp  := CreateBtn(hwnd, '?', WindowW-60, WindowW+60, 60, 20);
-edInput := CreateEdit(hwnd, 2, WindowW+40 + 2, WindowW-60 - 4, 40 - 4);
+bnHelp  := CreateBtn(hwnd, '?', WindowW-60, WindowW+60, 60, 40);
+edInput := CreateEdit(hwnd, 2, WindowW+40 + 2, WindowW-60 - 4, 60 - 4);
 SendMessageA(edInput, EM_SETLIMITTEXT, MaxChars, 0);
 stStatus := CreateHeader(hwnd, 'Loading', 0, WindowW+20, WindowW-60, 20);
 UpdateStatus;
